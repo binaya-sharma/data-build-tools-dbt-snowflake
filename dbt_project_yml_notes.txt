@@ -1,0 +1,41 @@
+
+dbt_project.yml - Purpose and Notes
+-----------------------------------
+
+Purpose:
+- Tells dbt where to find your models.
+- Applies configuration settings like materialized type (view, table, etc.).
+- Helps organize your project by model folders (like staging, marts).
+
+Basic Structure Example:
+
+name: dbt_analytics
+version: '1.0'
+config-version: 2
+
+model-paths: ["models"]
+profile: snowflake_profile_name
+
+models:
+  dbt_analytics:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table
+
+Explanation:
+- 'dbt_analytics' must match the name of your project.
+- 'staging' and 'marts' are folders inside the 'models' directory.
+- '+materialized: view' means all .sql files inside 'staging' will create views in Snowflake.
+- '+materialized: table' means all .sql files inside 'marts' will create tables in Snowflake.
+
+Important Notes:
+- If you do not mention folders in dbt_project.yml, dbt applies default behavior (views).
+- Folder names must exactly match the actual folder names inside /models.
+- Supported materializations: view, table, incremental, ephemeral.
+- You can also apply other settings like warehouse, tags, and descriptions here.
+- Changes here help control behavior of large dbt projects by folder.
+
+Usage Tip:
+- Always update dbt_project.yml when adding new folders like 'intermediate', 'core', etc.
+- Helps keep model behavior consistent and organized.
