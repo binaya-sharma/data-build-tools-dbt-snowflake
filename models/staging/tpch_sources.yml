@@ -1,20 +1,20 @@
 version: 2
 
 sources:
-  - name: tpch
-    database: snowflake_sample_data
-    schema: tpch_sf1
+  - name: tpch  # This is an arbitrary source name used in dbt; can be anything meaningful to you
+    database: snowflake_sample_data  # Must exactly match your Snowflake database name
+    schema: tpch_sf1  # Must exactly match your Snowflake schema name
     tables:
-      - name: orders
+      - name: orders  # Must exactly match the actual table name in Snowflake
         columns:
-          - name: o_order_key
+          - name: o_order_key  # Must exactly match the column name in the 'orders' table
             tests:
-              - unique
-              - not_null
-      - name: lineitem
+              - unique  # Test to ensure values in this column are unique
+              - not_null  # Test to ensure no NULL values in this column
+      - name: lineitem  # Must exactly match the actual table name in Snowflake
         columns:
-          - name: l_order_key
+          - name: l_order_key  # Must exactly match the column name in the 'lineitem' table
             tests:
-              - relationships:
-                  to: source('tpch', 'orders')
-                  field: o_order_key
+              - relationships:  # Test to check referential integrity
+                  to: source('tpch', 'orders')  # Reference to the 'orders' source table defined above
+                  field: o_order_key  # Column in the 'orders' table that 'l_order_key' should relate to

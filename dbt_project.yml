@@ -1,41 +1,32 @@
-
-# Name your project! Project names should contain only lowercase characters
-# and underscores. A good package name should reflect your organization's
-# name or the intended use of these models
+# Name your project! Use only lowercase letters and underscores.
+# The project name usually reflects your organization or purpose.
 name: 'dbt_analytics'
+
+# Version of your dbt project.
 version: '1.0.0'
 
-# This setting configures which "profile" dbt uses for this project.
+# Specifies which dbt profile to use for connection settings.
 profile: 'dbt_analytics'
 
-# These configurations specify where dbt should look for different types of files.
-# The `model-paths` config, for example, states that models in this project can be
-# found in the "models/" directory. You probably won't need to change these!
-model-paths: ["models"]
-analysis-paths: ["analyses"]
-test-paths: ["tests"]
-seed-paths: ["seeds"]
-macro-paths: ["macros"]
-snapshot-paths: ["snapshots"]
+# Paths where dbt will look for different types of files.
+model-paths: ["models"]          # Where SQL models are stored
+analysis-paths: ["analyses"]     # Where analysis files are stored
+test-paths: ["tests"]            # Where test files are stored
+seed-paths: ["seeds"]            # Where CSV seed files are stored
+macro-paths: ["macros"]          # Where reusable macros are stored
+snapshot-paths: ["snapshots"]    # Where snapshot files are stored
 
-clean-targets:         # directories to be removed by `dbt clean`
-  - "target"
-  - "dbt_packages"
+# Directories cleaned by `dbt clean` command.
+clean-targets:
+  - "target"                    # Compiled SQL and build artifacts
+  - "dbt_packages"              # Installed dbt packages
 
-
-# Configuring models
-# Full documentation: https://docs.getdbt.com/docs/configuring-models
-
-# In this example config, we tell dbt to build all models in the example/
-# directory as views. These settings can be overridden in the individual model
-# files using the `{{ config(...) }}` macro.
+# Model configurations: apply settings to groups of models.
 models:
-  dbt_analytics:
-    # Config indicated by + and applies to all files under models/example/
-    staging: ##addded here inplace of example binaya
-      +materialized: view
-      snowflake_warehouse: dbt_wh
-    marts:
-      +materialized: table
-      snowflake_warehouse: dbt_wh
-
+  dbt_analytics:                # Project folder name
+    staging:                    # Sub-folder for staging models
+      +materialized: view       # Build all staging models as views
+      snowflake_warehouse: dbt_wh  # Use this Snowflake warehouse for staging
+    marts:                     # Sub-folder for marts models
+      +materialized: table     # Build all marts models as tables
+      snowflake_warehouse: dbt_wh  # Use this Snowflake warehouse for marts
