@@ -1,7 +1,6 @@
 
-dbt_project.yml - Purpose and Notes
------------------------------------
-
+dbt_project.yml - Purpose
+-------------------------
 Purpose:
 - Tells dbt where to find your models.
 - Applies configuration settings like materialized type (view, table, etc.).
@@ -39,3 +38,36 @@ Important Notes:
 Usage Tip:
 - Always update dbt_project.yml when adding new folders like 'intermediate', 'core', etc.
 - Helps keep model behavior consistent and organized.
+
+
+-----------------------------------Folder Structure-----------------------------------**Important**-----------------------------------
+Standard dbt Folder Structure with Comments
+
+models/                       # Main folder for all dbt models and YAML schema files
+  staging/                    # Staging models - typically raw data cleaning and formatting
+    staging_model.sql         # Example staging model SQL file
+    staging_schema.yml        # YAML file describing staging models, columns, and tests
+  marts/                      # Data marts - business-level aggregated or curated models
+    marts_model.sql           # Example marts model SQL file
+    marts_schema.yml          # YAML file describing marts models, columns, and tests
+  sources/                    # Source definitions for raw tables (external data)
+    source_schema.yml         # YAML file describing sources and source-level tests
+
+dbt_project.yml               # Main project configuration file
+
+-- Example dbt_project.yml models config --
+
+models:
+  dbt_analytics:                     # Project folder name
+    staging:                         # Subfolder for staging
+      +materialized: view            # Build all staging models as views
+      snowflake_warehouse: dbt_wh    # Warehouse for staging models
+    marts:                           # Subfolder for marts
+      +materialized: table           # Build marts models as tables
+      snowflake_warehouse: dbt_wh    # Warehouse for marts models
+
+# Notes:
+# - YAML files describing models/(e.g., staging, marts) can be inside any models subfolder.
+# - All folders must be listed under 'models:' in dbt_project.yml to be recognized.
+# - Organize YAML files logically by layer or function for easier maintenance.
+
