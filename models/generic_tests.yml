@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: "Fact table combining orders with item summary data"
+    columns:
+      - name: order_key
+        description: "Primary key of the order"
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('stg_tpch_orders')
+              field: order_key
+              severity: warn
+
+      - name: status_code
+        description: "Order status"
+        tests:
+          - accepted_values:
+              values: ['P', 'O', 'F']

@@ -1,6 +1,6 @@
 
 dbt_project.yml - Purpose
--------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------
 Purpose:
 - Tells dbt where to find your models.
 - Applies configuration settings like materialized type (view, table, etc.).
@@ -67,7 +67,72 @@ models:
       snowflake_warehouse: dbt_wh    # Warehouse for marts models
 
 # Notes:
-# - YAML files describing models/(e.g., staging, marts) can be inside any models subfolder.
+# - YAML files describing models/(e.g., staging, marts) can be inside **any models** subfolder.
 # - All folders must be listed under 'models:' in dbt_project.yml to be recognized.
 # - Organize YAML files logically by layer or function for easier maintenance.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+Singular Test vs Granular Test in dbt
+
+1. Singular Test:
+   - Defined as a single SQL file (.sql) under the 'tests/' directory.
+   - Contains custom SQL logic to check a specific condition.
+   - Returns rows that violate the test condition.
+   - Used for complex or unique test scenarios not covered by generic tests.
+   - Example:
+       -- tests/positive_order_amount.sql
+       SELECT *
+       FROM {{ ref('fct_orders') }}
+       WHERE order_amount <= 0
+   - If any row is returned, test fails.
+
+2. Granular Test (Generic Test):
+   - Defined in YAML schema files under 'models/' or subfolders.
+   - Uses pre-built dbt test types like unique, not_null, relationships, accepted_values.
+   - Applied at column or table level.
+   - Easier to write and maintain for common data quality checks.
+   - Example in YAML:
+       models:
+         - name: fct_orders
+           columns:
+             - name: order_key
+               tests:
+                 - unique
+                 - not_null
+
+Summary:
+- Singular test = Custom SQL test files for specific complex checks.
+- Granular test = YAML-defined tests using dbt's built-in generic tests.
+- Both are important for data quality and serve different purposes.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+dbt Seeds: 
+
+- Seeds are **CSV files** (comma-separated values).
+- Usually stored in the `data/` folder of the dbt project.
+- Used to load static, small reference data or lookup tables.
+- Example: countries.csv, product_categories.csv
+- Seeds are NOT SQL files.
+- dbt loads seed CSV files into database tables during `dbt seed` command.
+- Seeds are easy way to manage small datasets inside dbt without external dependencies.
+
+Summary:
+- Seeds = CSV files, NOT SQL.
+- Use seeds for small static **lookup/reference** data.
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+Limitations of DBT
+
+- DBT focuses only on data transformation (T in ELT), not on data extraction or loading.
+- It does not support complex operations like UPSERT, MERGE, or DELETE directly.
+- Limited to SQL-based transformations and Jinja macros; no support for procedural languages.
+- Does not manage orchestration or workflow scheduling natively (needs tools like Airflow).
+- Testing is mostly limited to data quality and schema checks, no end-to-end testing.
+- Dependency on the underlying data warehouse features and SQL dialect support.
+- No native support for streaming or real-time data processing.
+- Debugging complex logic can be harder due to templating and compilation steps.
+- Managing large-scale projects requires strict organization and version control discipline.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+** Please refer to the documentation; it has everything. This is just for quick reference.
 

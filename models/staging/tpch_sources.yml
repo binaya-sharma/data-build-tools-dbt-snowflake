@@ -7,14 +7,14 @@ sources:
     tables:
       - name: orders  # Must exactly match the actual table name in Snowflake
         columns:
-          - name: o_order_key  # Must exactly match the column name in the 'orders' table
+          - name: O_ORDERKEY  # Must exactly match the column name in the 'orders' table
             tests:
               - unique  # Test to ensure values in this column are unique
               - not_null  # Test to ensure no NULL values in this column
       - name: lineitem  # Must exactly match the actual table name in Snowflake
         columns:
-          - name: l_order_key  # Must exactly match the column name in the 'lineitem' table
+          - name: l_orderkey  # Must exactly match the column name in the 'lineitem' table
             tests:
               - relationships:  # Test to check referential integrity
                   to: source('tpch', 'orders')  # Reference to the 'orders' source table defined above
-                  field: o_order_key  # Column in the 'orders' table that 'l_order_key' should relate to
+                  field: O_ORDERKEY  # Column in the 'orders' table that 'l_order_key' should relate to

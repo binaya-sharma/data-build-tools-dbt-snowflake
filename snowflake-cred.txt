@@ -1,0 +1,34 @@
+-- Use the highest-level role to perform admin tasks
+use role accountadmin;
+
+-- Create a virtual warehouse (if not exists check is not supported directly, so you can handle this programmatically if needed)
+-- Smallest compute size for cost efficiency during development
+create warehouse if not exists dbt_wh with warehouse_size = 'x-small';
+
+-- Create the database if it doesn't already exist
+create database if not exists dbt_db;
+
+-- Create a custom role for dbt-related operations if it doesn't already exist
+create role if not exists dbt_role;
+
+-- Optional: View existing grants on the warehouse (for auditing/debugging)
+show grants on warehouse dbt_wh;
+
+-- Grant permission to use the warehouse to the dbt role
+grant usage on warehouse dbt_wh to role dbt_role;
+
+-- Assign the dbt role to a specific user
+grant role dbt_role to user binayasharma1;
+
+-- Grant full access to the dbt_db database to the dbt role
+grant all on database dbt_db to role dbt_role;
+
+-- Switch to the newly created role for remaining operations
+use role dbt_role;
+
+-- Create a schema inside the dbt_db database for organizing DBT models
+create schema if not exists dbt_db.dbt_schema;
+
+-- to drop
+use role accountadmin;
+drop warehouse if exists dbt_wh;
